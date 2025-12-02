@@ -1,5 +1,7 @@
+'use client'
 import { navLinks } from '@/constants'
 import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 import Image from 'next/image'
 
 const Navbar = () => {
@@ -13,7 +15,7 @@ const Navbar = () => {
         });
 
         navTween.fromTo('nav', { backgroundColor: 'tranparent' }, {
-            backgroundColor: '#0000050',
+            backgroundColor: '#00000050',
             backgroundFilter: 'blur(10px)',
             duration: 1,
             ease: 'power1.inOut'
