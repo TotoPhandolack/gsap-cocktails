@@ -10,7 +10,7 @@ const page = () => {
     <main>
       <Navbar />
       <Hero />
-      <div className="h-dvh bg-black" />
+      {/* <div className="h-dvh bg-black" /> */}
     </main>
   )
 }
