@@ -48,48 +48,28 @@ const Hero = () => {
         const startValue = isMobile ? 'top 50%' : 'center 60%'
         const endValue = isMobile ? '120% top' : 'bottom top'
 
-        // Initialize video scrub animation
+        // eslint-disable-next-line prefer-const
+        let tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: 'video',
+                start: startValue,
+                end: endValue,
+                scrub: true,
+                pin: true,
+            },
+        });
+
+        // Force load on iOS/WebKit
         if (videoRef.current) {
-            const video = videoRef.current;
+            videoRef.current.load();
 
-            const initVideoAnimation = () => {
-                const tl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: video,
-                        start: startValue,
-                        end: endValue,
-                        scrub: true,
-                        pin: true,
-                    },
-                });
-
-                tl.to(video, {
-                    currentTime: video.duration || 0,
-                });
-            };
-
-            // Force load on iOS/WebKit
-            video.load();
-
-            // Multiple fallback listeners for iOS compatibility
-            const setupAnimation = () => {
-                if (video.duration && video.duration > 0) {
-                    initVideoAnimation();
+            videoRef.current.onloadedmetadata = () => {
+                if (videoRef.current) {
+                    tl.to(videoRef.current, {
+                        currentTime: videoRef.current.duration,
+                    });
                 }
             };
-
-            // Check if metadata is already loaded
-            if (video.readyState >= 1 && video.duration) {
-                initVideoAnimation();
-            } else {
-                // Listen to multiple events for iOS compatibility
-                video.addEventListener('loadedmetadata', setupAnimation, { once: true });
-                video.addEventListener('loadeddata', setupAnimation, { once: true });
-                video.addEventListener('canplay', setupAnimation, { once: true });
-
-                // Fallback timeout for iOS
-                setTimeout(setupAnimation, 1000);
-            }
         }
 
     }, [isMobile])
