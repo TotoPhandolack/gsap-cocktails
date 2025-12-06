@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger, SplitText)
 
 const Hero = () => {
     const videoRef = useRef<HTMLVideoElement>(null)
-    const isMobile = useMediaQuery({ maxWidth: 767 })
+    const isMobile = useMediaQuery({ maxWidth: 1000 })
 
 
     useGSAP(() => {
@@ -46,14 +46,14 @@ const Hero = () => {
             .to('.left-leaf', { y: -200 }, 0)
 
         const startValue = isMobile ? 'top 50%' : 'center 60%'
-        const endValue = isMobile ? '120% top' : 'bottom top'
 
         // eslint-disable-next-line prefer-const
         let tl = gsap.timeline({
             scrollTrigger: {
                 trigger: 'video',
                 start: startValue,
-                end: endValue,
+                endTrigger: isMobile ? '#cocktails' : 'video',
+                end: isMobile ? 'bottom bottom' : 'bottom top',
                 scrub: true,
                 pin: true,
             },
