@@ -9,8 +9,8 @@ gsap.registerPlugin(ScrollTrigger, SplitText)
 
 const Hero = () => {
     const videoRef = useRef<HTMLVideoElement>(null)
-
     const isMobile = useMediaQuery({ maxWidth: 767 })
+
 
     useGSAP(() => {
         const heroSplit = new SplitText('.title', { type: 'chars, words' });
@@ -68,11 +68,27 @@ const Hero = () => {
                 });
             };
 
+            // Force load on iOS/WebKit
+            video.load();
+
+            // Multiple fallback listeners for iOS compatibility
+            const setupAnimation = () => {
+                if (video.duration && video.duration > 0) {
+                    initVideoAnimation();
+                }
+            };
+
             // Check if metadata is already loaded
-            if (video.readyState >= 1) {
+            if (video.readyState >= 1 && video.duration) {
                 initVideoAnimation();
             } else {
-                video.addEventListener('loadedmetadata', initVideoAnimation, { once: true });
+                // Listen to multiple events for iOS compatibility
+                video.addEventListener('loadedmetadata', setupAnimation, { once: true });
+                video.addEventListener('loadeddata', setupAnimation, { once: true });
+                video.addEventListener('canplay', setupAnimation, { once: true });
+
+                // Fallback timeout for iOS
+                setTimeout(setupAnimation, 1000);
             }
         }
 
